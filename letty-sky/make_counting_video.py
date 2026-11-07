@@ -40,8 +40,30 @@ NUM_COLORS = [None, "#ff4d6d", "#ff9f1c", "#ffd60a", "#38b000", "#00b4d8",
 
 # ----------------------------------------------------------------- audio --
 
+KOKORO_DIR = os.environ.get("KOKORO_DIR")
+_kokoro = None
+if KOKORO_DIR and os.path.exists(os.path.join(KOKORO_DIR, "kokoro.onnx")):
+    from kokoro_onnx import Kokoro
+    _kokoro = Kokoro(os.path.join(KOKORO_DIR, "kokoro.onnx"), os.path.join(KOKORO_DIR, "voices.bin"))
+    print("Voice: Kokoro (natural)")
+else:
+    print("Voice: espeak-ng (set KOKORO_DIR for natural voices)")
+
+
 def tts(text, who):
-    """Render a line with espeak-ng; Letty = higher voice, Sky = lower."""
+    """Render a line. Kokoro (Apache-2.0, natural) if available, else espeak-ng."""
+    if _kokoro is not None:
+        voice = "af_heart" if who == "letty" else "am_puck"
+        a, sr = _kokoro.create(text, voice=voice, speed=0.88, lang="en-us")
+        a = np.asarray(a, dtype=np.float32)
+        # play back ~12% faster-and-higher for a cheerful cartoon voice
+        sr = sr * 1.12
+        n = int(len(a) * SR / sr)
+        a = np.interp(np.linspace(0, len(a) - 1, n), np.arange(len(a)), a)
+        idx = np.where(np.abs(a) > 0.01)[0]
+        if len(idx):
+            a = a[max(0, idx[0] - 200): idx[-1] + 800]
+        return a / (np.max(np.abs(a)) + 1e-9) * 0.85
     path = os.path.join(TMP, f"tts_{abs(hash((text, who)))}.wav")
     if not os.path.exists(path):
         voice, pitch = ("en-us+f3", "70") if who == "letty" else ("en-us+m3", "55")
