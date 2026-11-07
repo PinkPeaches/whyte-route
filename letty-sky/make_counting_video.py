@@ -609,7 +609,7 @@ ff = subprocess.Popen(
     ["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24",
      "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-", "-i", audio_path,
      "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p",
-     "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", video_path],
+     "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-c:a", "aac", "-b:a", "192k", "-ac", "2", "-ar", "48000", "-shortest", "-movflags", "+faststart", video_path],
     stdin=subprocess.PIPE)
 for f in range(nframes):
     tm = f / FPS
