@@ -1,0 +1,14 @@
+pages: 62
+colour operators used: [(b'0', b'G'), (b'0', b'g'), (b'1', b'G'), (b'1', b'g')]
+RGB/CMYK operators: 0
+art pages: 30  blank pages: 31
+smallest margin on any art page: 0.64 in (KDP minimum 0.25 in)
+mid-grey pixels away from black lines (should be 0): 9
+art pages containing text: none
+most similar page pairs (coloring-page numbers 1-30)  [ncc, iou]:
+   23 vs 29   ncc=0.64  iou=0.52
+   19 vs 29   ncc=0.60  iou=0.48
+   16 vs 23   ncc=0.59  iou=0.47
+   19 vs 23   ncc=0.55  iou=0.44
+   16 vs 29   ncc=0.52  iou=0.41
+   12 vs 23   ncc=0.52  iou=0.41
